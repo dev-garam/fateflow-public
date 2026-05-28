@@ -1,15 +1,15 @@
-# Fateflow Public Case Study
+# Fateflow Public
 
-Fateflow는 사주/운세 분석 서비스를 직접 운영해보기 위해 만든 개인 서비스입니다.
+Fateflow는 LLM API 없이 명리학 도메인 규칙과 해석 정책을 바탕으로 사주/운세 응답을 생성하는 개인 서비스입니다.
 
-이 공개 레포는 운영 중인 private 레포 전체를 공개한 것이 아니라, 백엔드 설계와 구현 방식을 설명하기 위해 민감 정보와 운영 설정을 제거한 포트폴리오용 case study입니다.
+이 공개 레포는 운영 중인 private 레포 전체가 아니라, 공개 가능한 백엔드 설계와 핵심 구현 샘플을 정리한 레포입니다.
 
 코드는 그대로 실행 가능한 전체 서버가 아니라 선별된 샘플입니다. 대신 `npm run check`로 공개 범위에 맞는 파일 구조와 민감정보 노출 여부를 점검할 수 있도록 구성했습니다.
 
 ## Service
 
 - 운영 서비스: [fateflow.app](https://fateflow.app)
-- 공개 case study: [github.com/dev-garam/fateflow-public](https://github.com/dev-garam/fateflow-public)
+- 공개 레포: [github.com/dev-garam/fateflow-public](https://github.com/dev-garam/fateflow-public)
 
 ## Main Point
 
@@ -26,6 +26,17 @@ Fateflow의 핵심 목표는 LLM API를 호출해 운세 문장을 생성하는 
 - 공유 스냅샷 생성, 공개 조회, 만료, soft delete 처리
 - 테스트를 통한 경계값, 인증 세션, 공유 스냅샷 검증
 - 운영 서비스와 공개 포트폴리오의 분리 방식
+
+## Documents
+
+- [Architecture](docs/architecture.md): 전체 서버 구조와 rule-based 응답 생성 흐름
+- [Rule-based Reading](docs/rule-based-reading.md): LLM 없이 사주 응답을 생성하기 위한 설계
+- [Auth and Session](docs/auth-session.md): Google OAuth, JWT, Redis session 구조
+- [Database Modeling](docs/database-modeling.md): Prisma/PostgreSQL 모델링
+- [Deployment](docs/deployment.md): GitHub Actions, Cloud Run, Terraform 기반 운영 배포 구조
+- [Testing](docs/testing.md): 인증, 공유, 날짜/시간 경계값 테스트 관점
+- [Public Scope](docs/public-scope.md): 공개 범위와 제외한 항목
+- [Server Samples](samples/server/README.md): 공개 샘플 코드 구성
 
 ## Tech Stack
 
@@ -166,4 +177,4 @@ Refresh token은 Redis session과 연결하고 rotation 방식으로 갱신합�
 
 실제 운영 서비스는 private 레포에서 관리하며, 이 공개 레포는 설계 의도와 핵심 구현 방식을 보여주기 위한 목적으로 구성했습니다.
 
-Swagger 문서와 전체 API 실행 환경은 운영 서비스에 연결되는 정보가 포함될 수 있어 공개하지 않았습니다. 대신 관련 API 설계 의도는 [`docs/`](docs/)와 [`samples/server/`](samples/server/)에 분리해 정리했습니다.
+Swagger 문서와 전체 API 실행 환경은 운영 서비스에 연결되는 정보가 포함될 수 있어 공개하지 않았습니다. 대신 관련 API 설계 의도는 [Architecture](docs/architecture.md), [Rule-based Reading](docs/rule-based-reading.md), [Auth and Session](docs/auth-session.md), [Deployment](docs/deployment.md), [Server Samples](samples/server/README.md)에 분리해 정리했습니다.

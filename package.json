@@ -1,7 +1,7 @@
 {
   "name": "fateflow-public",
   "version": "0.1.0",
-  "description": "Fateflow public case study for a rule-based saju reading backend without LLM API calls.",
+  "description": "Public backend samples and design notes for Fateflow, a rule-based saju reading service without LLM API calls.",
   "private": false,
   "type": "module",
   "scripts": {
@@ -14,7 +14,7 @@
     "nestjs",
     "typescript",
     "backend",
-    "case-study",
+    "portfolio",
     "rule-based-engine",
     "saju"
   ],

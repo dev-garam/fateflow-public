@@ -35,9 +35,9 @@ for (const path of requiredPaths) {
 }
 
 if (missing.length > 0) {
-  console.error('Required public case-study files are missing:');
+  console.error('Required public sample files are missing:');
   missing.forEach((path) => console.error(`- ${path}`));
   process.exit(1);
 }
 
-console.log('Public case-study structure looks complete.');
+console.log('Public sample structure looks complete.');
