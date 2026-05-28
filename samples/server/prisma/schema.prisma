@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum AuthProvider {
+  GOOGLE
+  APPLE
+  KAKAO
+  NAVER
+}
+
+enum ManseProfileRelationship {
+  SELF
+  PARENT
+  SPOUSE
+  PARTNER
+  CHILD
+  FAMILY
+  OTHER
+}
+
+enum CalendarType {
+  SOLAR
+  LUNAR
+}
+
+enum GenderType {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
+}
+
+enum ShareSnapshotType {
+  SAJU_SUMMARY
+  GOONGHAP
+  TODAY_FORTUNE
+  MONTHLY_FORTUNE
+  YEARLY_FORTUNE
+  DECADE_FORTUNE
+}
+
+enum ShareSnapshotStatus {
+  ACTIVE
+  DISABLED
+  EXPIRED
+  DELETED
+}
+
+model AlgorithmProfile {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String   @unique @db.VarChar(100)
+  displayName String   @map("display_name") @db.VarChar(120)
+  summary     String   @db.VarChar(400)
+  school      String   @db.VarChar(80)
+  strategy    String   @db.VarChar(160)
+  auxiliary   String   @db.VarChar(160)
+  status      String   @db.VarChar(20)
+  isDefault   Boolean  @default(false) @map("is_default")
+  configJson  Json     @map("config_json")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([isDefault], map: "idx_algorithm_profiles_is_default")
+  @@index([status], map: "idx_algorithm_profiles_status")
+  @@map("algorithm_profiles")
+}
+
+model User {
+  id               String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status           UserStatus           @default(ACTIVE)
+  displayName      String?              @map("display_name") @db.VarChar(120)
+  phoneNumber      String?              @unique @map("phone_number") @db.VarChar(30)
+  profileImageUrl  String?              @map("profile_image_url") @db.VarChar(500)
+  lastLoginAt      DateTime?            @map("last_login_at") @db.Timestamptz(6)
+  deletedAt        DateTime?            @map("deleted_at") @db.Timestamptz(6)
+  createdAt        DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime             @updatedAt @map("updated_at") @db.Timestamptz(6)
+  identities       UserIdentity[]
+  manseProfiles    ManseProfile[]
+  shareSnapshots   ShareSnapshot[]
+
+  @@index([status], map: "idx_users_status")
+  @@index([deletedAt], map: "idx_users_deleted_at")
+  @@index([lastLoginAt], map: "idx_users_last_login_at")
+  @@map("users")
+}
+
+model UserIdentity {
+  id                 String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String       @map("user_id") @db.Uuid
+  provider           AuthProvider
+  providerUserId     String       @map("provider_user_id") @db.VarChar(191)
+  email              String?      @db.VarChar(320)
+  emailVerified      Boolean      @default(false) @map("email_verified")
+  providerUsername   String?      @map("provider_username") @db.VarChar(120)
+  providerAvatarUrl  String?      @map("provider_avatar_url") @db.VarChar(500)
+  rawProfileJson     Json?        @map("raw_profile_json")
+  lastLoginAt        DateTime?    @map("last_login_at") @db.Timestamptz(6)
+  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId], map: "uq_user_identities_provider_user_id")
+  @@index([userId], map: "idx_user_identities_user_id")
+  @@index([email], map: "idx_user_identities_email")
+  @@index([provider, email], map: "idx_user_identities_provider_email")
+  @@map("user_identities")
+}
+
+model ManseProfile {
+  id            String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String                   @map("user_id") @db.Uuid
+  displayName   String                   @map("display_name") @db.VarChar(60)
+  relationship  ManseProfileRelationship @default(OTHER)
+  birthDate     DateTime                 @map("birth_date") @db.Date
+  birthTime     String?                  @map("birth_time") @db.VarChar(5)
+  timeUnknown   Boolean                  @default(false) @map("time_unknown")
+  calendarType  CalendarType             @default(SOLAR) @map("calendar_type")
+  isLeapMonth   Boolean?                 @map("is_leap_month")
+  gender        GenderType               @default(UNKNOWN)
+  notes         String?                  @db.VarChar(500)
+  isPinned      Boolean                  @default(false) @map("is_pinned")
+  lastViewedAt  DateTime?                @map("last_viewed_at") @db.Timestamptz(6)
+  createdAt     DateTime                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime?                @map("deleted_at") @db.Timestamptz(6)
+  user          User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt], map: "idx_manse_profiles_user_id_updated_at")
+  @@index([userId, relationship], map: "idx_manse_profiles_user_id_relationship")
+  @@index([userId, lastViewedAt], map: "idx_manse_profiles_user_id_last_viewed_at")
+  @@map("manse_profiles")
+}
+
+model ShareSnapshot {
+  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shareId         String              @unique @map("share_id") @db.VarChar(80)
+  type            ShareSnapshotType
+  status          ShareSnapshotStatus @default(ACTIVE)
+  userId          String?             @map("user_id") @db.Uuid
+  sourceId        String?             @map("source_id") @db.VarChar(120)
+  title           String              @db.VarChar(240)
+  summary         String?             @db.VarChar(500)
+  score           Int?
+  optionsJson     Json                @map("options_json")
+  inputJson       Json?               @map("input_json")
+  resultJson      Json                @map("result_json")
+  renderJson      Json?               @map("render_json")
+  ogTitle         String?             @map("og_title") @db.VarChar(240)
+  ogDescription   String?             @map("og_description") @db.VarChar(500)
+  ogImageUrl      String?             @map("og_image_url") @db.VarChar(500)
+  viewCount       Int                 @default(0) @map("view_count")
+  lastViewedAt    DateTime?           @map("last_viewed_at") @db.Timestamptz(6)
+  expiresAt       DateTime?           @map("expires_at") @db.Timestamptz(6)
+  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt       DateTime?           @map("deleted_at") @db.Timestamptz(6)
+  user            User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt], map: "idx_share_snapshots_user_id_created_at")
+  @@index([type, createdAt], map: "idx_share_snapshots_type_created_at")
+  @@index([status, expiresAt], map: "idx_share_snapshots_status_expires_at")
+  @@map("share_snapshots")
+}
