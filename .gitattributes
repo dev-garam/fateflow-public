@@ -1,0 +1,4 @@
+# Count selected public samples as source code in GitHub Linguist.
+samples/** linguist-vendored=false
+samples/server/src/**/*.ts linguist-language=TypeScript
+samples/server/test/**/*.js linguist-language=JavaScript
