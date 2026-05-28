@@ -7,6 +7,7 @@ const requiredPaths = [
   'docs/rule-based-reading.md',
   'docs/auth-session.md',
   'docs/database-modeling.md',
+  'docs/deployment.md',
   'docs/testing.md',
   'docs/public-scope.md',
   'samples/server/README.md',

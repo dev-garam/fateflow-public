@@ -6,6 +6,11 @@ Fateflow는 사주/운세 분석 서비스를 직접 운영해보기 위해 만�
 
 코드는 그대로 실행 가능한 전체 서버가 아니라 선별된 샘플입니다. 대신 `npm run check`로 공개 범위에 맞는 파일 구조와 민감정보 노출 여부를 점검할 수 있도록 구성했습니다.
 
+## Service
+
+- 운영 서비스: [fateflow.app](https://fateflow.app)
+- 공개 case study: [github.com/dev-garam/fateflow-public](https://github.com/dev-garam/fateflow-public)
+
 ## Main Point
 
 Fateflow의 핵심 목표는 LLM API를 호출해 운세 문장을 생성하는 것이 아니라, 명리학 도메인 규칙과 해석 정책, 템플릿 조합, 문장 정제 로직을 직접 설계해 일관된 사주 응답을 만들어보는 것이었습니다.
@@ -104,6 +109,7 @@ docs/
   rule-based-reading.md
   auth-session.md
   database-modeling.md
+  deployment.md
   testing.md
   public-scope.md
 
@@ -144,14 +150,15 @@ Refresh token은 Redis session과 연결하고 rotation 방식으로 갱신합�
 
 ## Sample Code Map
 
-- Rule-based narrative rendering: `samples/server/src/myeongri/renderers/`
-- Saju summary report: `samples/server/src/myeongri/services/saju-summary-report.service.ts`
-- Interpretation state types: `samples/server/src/myeongri/common/interpretation-state.types.ts`
-- Algorithm policy normalization: `samples/server/src/myeongri/common/algorithm-config.ts`
-- Auth session: `samples/server/src/auth/`
-- Share snapshot: `samples/server/src/share-snapshot/`
-- Database schema: `samples/server/prisma/schema.prisma`
-- Tests: `samples/server/test/`
+- Rule-based narrative rendering: [`samples/server/src/myeongri/renderers/`](samples/server/src/myeongri/renderers/)
+- Saju summary report: [`samples/server/src/myeongri/services/saju-summary-report.service.ts`](samples/server/src/myeongri/services/saju-summary-report.service.ts)
+- Interpretation state types: [`samples/server/src/myeongri/common/interpretation-state.types.ts`](samples/server/src/myeongri/common/interpretation-state.types.ts)
+- Algorithm policy normalization: [`samples/server/src/myeongri/common/algorithm-config.ts`](samples/server/src/myeongri/common/algorithm-config.ts)
+- Auth session: [`samples/server/src/auth/`](samples/server/src/auth/)
+- Share snapshot: [`samples/server/src/share-snapshot/`](samples/server/src/share-snapshot/)
+- Database schema: [`samples/server/prisma/schema.prisma`](samples/server/prisma/schema.prisma)
+- Tests: [`samples/server/test/`](samples/server/test/)
+- Deployment note: [`docs/deployment.md`](docs/deployment.md)
 
 ## Notes
 
@@ -159,4 +166,4 @@ Refresh token은 Redis session과 연결하고 rotation 방식으로 갱신합�
 
 실제 운영 서비스는 private 레포에서 관리하며, 이 공개 레포는 설계 의도와 핵심 구현 방식을 보여주기 위한 목적으로 구성했습니다.
 
-Swagger 문서와 전체 API 실행 환경은 운영 서비스에 연결되는 정보가 포함될 수 있어 공개하지 않았습니다. 대신 관련 API 설계 의도는 `docs/`와 `samples/server/`에 분리해 정리했습니다.
+Swagger 문서와 전체 API 실행 환경은 운영 서비스에 연결되는 정보가 포함될 수 있어 공개하지 않았습니다. 대신 관련 API 설계 의도는 [`docs/`](docs/)와 [`samples/server/`](samples/server/)에 분리해 정리했습니다.
